@@ -58,17 +58,38 @@ function wsdlTypeToInterfaceObj(obj: IInterfaceObject, typeCollector?: TypeColle
         const t = typeof v;
         if (t === "string") {
             const vstr = v as string;
-            const [typeName, superTypeClass, typeData] =
+            let [typeName, superTypeClass, typeData] =
                 vstr.indexOf("|") === -1 ? [vstr, vstr, undefined] : vstr.split("|");
+            //catch the case were the v is 'xsd:string|String1,String2,String3,String4'
+            if (typeData === undefined
+              && typeof superTypeClass === "string"
+              && superTypeClass !== typeName
+              && !superTypeClass.startsWith("xsd:")
+              && (typeName === "xsd:string" || typeName === "xsd:number")) {
+              typeData = superTypeClass
+              superTypeClass = typeName
+            }
             const typeFullName = obj.targetNamespace ? obj.targetNamespace + "#" + typeName : typeName;
-            let typeClass = superTypeClass === "integer" ? "number" : superTypeClass;
+            if (superTypeClass.startsWith('xsd:')) {
+              superTypeClass = superTypeClass.substring(4)
+            }
+            let typeClass =
+              superTypeClass === "integer" || superTypeClass === "float" ? "number" :
+              superTypeClass === "dateTime" ? "Date" :
+              superTypeClass === "text" ? "string" :
+              superTypeClass;
+
             if (nsEnums[typeFullName] || typeData) {
                 const filter = nsEnums[typeFullName] ?
                     () => true :
                     (x: string) => x !== "length" && x !== "pattern" && x !== "maxLength" && x !== "minLength";
                 const tdsplit = typeData.split(",").filter(filter);
                 if (tdsplit.length) {
-                    typeClass = "\"" + tdsplit.join("\" | \"") + "\"";
+                    if (typeClass === "number") {
+                      typeClass = tdsplit.join(" | ");
+                    } else {
+                      typeClass = "\"" + tdsplit.join("\" | \"") + "\"";
+                    }
                 }
             }
             if (isArray) {
@@ -149,10 +170,12 @@ function wsdlTypeToInterfaceString(d: { [k: string]: any }, opts: IInterfaceOpti
                 // for types like "xsd:string" only the "string" part is used
                 const rawtype = v.substring(i).trim();
                 const colon = rawtype.indexOf(":");
-                if (colon !== -1) {
-                    r.push(p + ": " + rawtype.substring(colon + 1));
+                if (colon === -1) {
+                  r.push(p + ": " + rawtype);
+                } else if (rawtype.startsWith("Array<")) {
+                  r.push(p + ": Array<" + rawtype.substring(colon + 1, rawtype.length - 2) + ">;");
                 } else {
-                    r.push(p + ": " + rawtype);
+                  r.push(p + ": " + rawtype.substring(colon + 1));
                 }
             } else {
                 r.push(p + ": " + v);
