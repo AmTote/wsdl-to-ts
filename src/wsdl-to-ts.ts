@@ -75,7 +75,7 @@ function wsdlTypeToInterfaceObj(obj: IInterfaceObject, typeCollector?: TypeColle
             }
             let typeClass =
               superTypeClass === "integer" || superTypeClass === "float" ? "number" :
-              superTypeClass === "dateTime" ? "Date" :
+              superTypeClass === "dateTime" || superTypeClass === "date" ? "Date" :
               superTypeClass === "text" ? "string" :
               superTypeClass;
 
