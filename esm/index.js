@@ -5,7 +5,7 @@ import * as minimist from "minimist";
 import * as mkdirp from "mkdirp";
 import { mergeTypedWsdl, outputTypedWsdl, wsdl2ts } from "./wsdl-to-ts";
 const opts = {};
-const config = { outdir: "./wsdl", files: [], tslintDisable: ["max-line-length", "no-empty-interface", "max-union-size"], tslintEnable: [] };
+const config = { outdir: "./wsdl", files: [], tslintDisable: ["max-line-length", "no-empty-interface", "max-union-size", "no-unnecessary-qualifier"], tslintEnable: [] };
 const args = minimist(process.argv.slice(2));
 if (args.help) {
     // TODO

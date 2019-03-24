@@ -47,7 +47,7 @@ function wsdlTypeToInterfaceObj(obj, typeCollector) {
                 superTypeClass = superTypeClass.substring(4);
             }
             let typeClass = superTypeClass === "integer" || superTypeClass === "float" ? "number" :
-                superTypeClass === "dateTime" ? "Date" :
+                superTypeClass === "dateTime" || superTypeClass === "date" ? "Date" :
                     superTypeClass === "text" ? "string" :
                         superTypeClass;
             if (nsEnums[typeFullName] || typeData) {
