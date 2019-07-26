@@ -292,7 +292,7 @@ export function wsdl2ts(wsdlUri: string, opts?: IInterfaceOptions): Promise<ITyp
 }
 
 function cloneObj<T extends { [k: string]: any }>(a: T): T {
-    const b: T = {} as any;
+    const b: any = {} as any;
     for (const k of Object.keys(a)) {
         const t = typeof a[k];
         b[k] = t === "object" ?

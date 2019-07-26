@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 "use strict";
 import { rename, writeFile } from "fs";
-import * as minimist from "minimist";
-import * as mkdirp from "mkdirp";
+import minimist from "minimist";
+import mkdirp from "mkdirp";
 import { mergeTypedWsdl, outputTypedWsdl, wsdl2ts } from "./wsdl-to-ts";
 const opts = {};
 const config = { outdir: "./wsdl", files: [], tslintDisable: ["max-line-length", "no-empty-interface", "max-union-size", "no-unnecessary-qualifier"], tslintEnable: [] };

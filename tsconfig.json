@@ -13,7 +13,8 @@
         "outDir": "lib",
         "lib": [
             "es6"
-        ]
+        ],
+        "esModuleInterop": true
     },
     "exclude": [
         "node_modules",

@@ -2,8 +2,8 @@
 "use strict";
 
 import { rename, writeFile } from "fs";
-import * as minimist from "minimist";
-import * as mkdirp from "mkdirp";
+import minimist from "minimist";
+import mkdirp from "mkdirp";
 import { IInterfaceOptions, ITypedWsdl, mergeTypedWsdl, outputTypedWsdl, wsdl2ts } from "./wsdl-to-ts";
 
 interface IConfigObject {
