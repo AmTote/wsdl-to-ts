@@ -9,12 +9,28 @@ import { IInterfaceOptions, ITypedWsdl, mergeTypedWsdl, outputTypedWsdl, wsdl2ts
 interface IConfigObject {
     outdir: string;
     files: string[];
+    eslintDisable: null | string[];
+    eslintEnable: null | string[];
     tslintDisable: null | string[];
     tslintEnable: null | string[];
 }
 
 const opts: IInterfaceOptions = {};
-const config: IConfigObject = { outdir: "./wsdl", files: [], tslintDisable: ["max-line-length", "no-empty-interface", "max-union-size", "no-unnecessary-qualifier"], tslintEnable: [] };
+const config: IConfigObject = {
+    outdir: "./wsdl",
+    files: [],
+    eslintDisable: [
+        "max-line-length"
+    ],
+    eslintEnable: [],
+    tslintDisable: [
+        "max-line-length",
+        "no-empty-interface",
+        "max-union-size",
+        "no-unnecessary-qualifier"
+    ],
+    tslintEnable: []
+};
 
 const args = minimist(process.argv.slice(2));
 
@@ -42,6 +58,20 @@ if (args.hasOwnProperty("tslint")) {
 
 if (args.hasOwnProperty("tslint-disable")) {
     config.tslintDisable = args["tslint-disable"] ? args["tslint-disable"].split(",") : null;
+}
+
+if (args.hasOwnProperty("eslint")) {
+    if (args.eslint === "true") {
+        config.eslintEnable = null;
+    } else if (args.eslint === "false" || args.eslint === "disable") {
+        config.eslintDisable = null;
+    } else {
+        config.eslintEnable = args.eslint ? args.eslint.split(",") : null;
+    }
+}
+
+if (args.hasOwnProperty("eslint-disable")) {
+    config.eslintDisable = args["eslint-disable"] ? args["eslint-disable"].split(",") : null;
 }
 
 if (args.outdir || args.outDir) {
@@ -101,6 +131,17 @@ Promise.all(config.files.map((a) => wsdl2ts(a, opts))).
                     }
                     if (config.tslintEnable && config.tslintEnable.length !== 0) {
                         fileData.push("/* tslint:enable:" + config.tslintEnable.join(" ") + " */");
+                    }
+                    if (config.eslintEnable === null) {
+                        fileData.push("/* eslint-enable */");
+                    }
+                    if (config.eslintDisable === null) {
+                        fileData.push("/* eslint-disable */");
+                    } else if (config.eslintDisable.length !== 0) {
+                        fileData.push("/* eslint-disable " + config.eslintDisable.join(",") + " */");
+                    }
+                    if (config.eslintEnable && config.eslintEnable.length !== 0) {
+                        fileData.push("/* eslint-enable " + config.eslintEnable.join(",") + " */");
                     }
                     fileData.push(x.data.join("\n\n"));
                     fileData.push("");
