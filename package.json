@@ -35,7 +35,7 @@
   "dependencies": {
     "minimist": "^1.2.0",
     "mkdirp": ">=0.5.1 <1.0.0",
-    "soap": "^0.26.0"
+    "soap": "https://github.com/AmTote/node-soap.git"
   },
   "bugs": {
     "url": "https://github.com/TimLuq/wsdl-to-ts/issues"
